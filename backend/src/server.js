@@ -10,18 +10,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(
-  cors({
-    origin: process.env.METRO_URL,
-    credentials: true,
-  }),
-);
+// app.use(
+//   cors({
+//     origin: process.env.METRO_URL,
+//     credentials: true,
+//   }),
+// );
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // TODO: ROUTER API
 app.use("/api/auth", authRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
 });

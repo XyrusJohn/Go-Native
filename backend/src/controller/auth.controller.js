@@ -57,7 +57,7 @@ export const driverRegister = async (req, res) => {
       return res.status(201).json({
         success: true,
         message: "Driver registered successfully",
-        data: {
+        user: {
           id: newDriver.id,
           username: newDriver.username,
           lastName: lastName,
@@ -110,8 +110,10 @@ export const driverLogin = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Login successful",
-        data: userData,
-        truckCompanyName: truckCompany.name,
+        user: {
+          ...userData,
+          truck_company_name: truckCompany ? truckCompany.name : null,
+        },
       });
     }
   } catch (error) {
@@ -128,7 +130,7 @@ export const driverLogout = async (req, res) => {
   try {
     res.clearCookie("jwt", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "development",
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
     });
@@ -163,7 +165,7 @@ export const checkAuth = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "User authenticated",
-      data: userData,
+      user: userData,
     });
   } catch (error) {
     console.error("CheckAuth error: ", error);

@@ -44,13 +44,19 @@ export default function App() {
       </View>
     );
   }
+  // for dev purposes, skip login
+  const SKIP_LOGIN = __DEV__ && true;
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {authUser ? (
+        {SKIP_LOGIN || authUser ? (
           <>
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
           </>
         ) : (
           <>

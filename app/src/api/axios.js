@@ -1,14 +1,23 @@
 import axios from "axios";
-import { CookieJar } from "tough-cookie";
-import { wrapper } from "axios-cookiejar-support";
+import * as SecureStore from "expo-secure-store";
 
-const jar = new CookieJar();
+export const axiosInstance = axios.create({
+  baseURL: process.env.EXPO_PUBLIC_APP_URL,
+  timeout: 5000,
+});
 
-export const axiosInstance = wrapper(
-  axios.create({
-    baseURL: process.env.EXPO_PUBLIC_APP_URL,
-    withCredentials: true,
-    jar,
-    timeout: 5000,
-  }),
+// Interceptor para kusang isama ang Token galing sa SecureStore sa bawat request
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    try {
+      const token = await SecureStore.getItemAsync("userToken");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.log("Error getting token from SecureStore", error);
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
 );

@@ -5,6 +5,7 @@ import {
   driverLogin,
   checkAuth,
   driverLogout,
+  getTruckCompanies,
 } from "../controller/auth.controller.js";
 
 const router = Router();
@@ -14,4 +15,6 @@ router.post("/login", driverLogin);
 router.post("/logout", driverLogout);
 
 router.get("/check", protectRoute, checkAuth);
+router.get("/truck-companies", getTruckCompanies);
+
 export default router;

@@ -7,11 +7,13 @@ export const useAuthStore = create((set, get) => ({
   // Initial State
   authUser: null,
   userData: [],
+  truckCompanies: [],
 
   isCheckingAuth: false,
   isRegistering: false,
   isLoggingIn: false,
   isLoggingOut: false,
+  isFetchingTruckCompanies: false,
 
   checkAuth: async () => {
     set({ isCheckingAuth: true });
@@ -75,6 +77,21 @@ export const useAuthStore = create((set, get) => ({
       console.error("Error in driverLogout", error);
     } finally {
       set({ isLoggingOut: false });
+    }
+  },
+
+  fetchTruckCompanies: async () => {
+    try {
+      set({ isFetchingTruckCompanies: true });
+      const fetchTruckCompaniesRes = await axiosInstance.get(
+        "auth/truck-companies",
+      );
+
+      set({ truckCompanies: fetchTruckCompaniesRes.data.data });
+    } catch (error) {
+      console.error("Error in fetchTruckCompanies", error);
+    } finally {
+      set({ isFetchingTruckCompanies: false });
     }
   },
 }));

@@ -62,7 +62,7 @@ export default function App() {
             <Stack.Screen
               name="Registration"
               component={RegistrationScreen}
-              options={{ title: "Registration" }}
+              options={{ headerShown: false }}
             />
           </>
         )}

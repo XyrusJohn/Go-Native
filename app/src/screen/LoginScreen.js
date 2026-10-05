@@ -51,7 +51,7 @@ export default function LoginScreen() {
           </Text>
           <TextInput
             className="border border-slate-200 rounded-xl px-4 py-4 font-atkinson-bold text-slate-700 mb-6"
-            placeholder="RI100000000"
+            placeholder="LA100000000"
             placeholderTextColor="#9ca3af"
             value={username}
             onChangeText={setUsername}
@@ -62,8 +62,8 @@ export default function LoginScreen() {
             Password
           </Text>
           <TextInput
-            className="border border-slate-200 rounded-xl px-4 py-4 font-atkinson-bold text-slate-700 mb-8"
-            placeholder="***********"
+            className="border border-slate-200 rounded-xl p-4 font-atkinson-bold text-slate-700 mb-8"
+            placeholder="******"
             placeholderTextColor="#9ca3af"
             secureTextEntry
             value={password}
@@ -87,9 +87,6 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
         </View>
-
-        {/* SEPARATOR LINE */}
-        {/* <View className="border-b border-slate-300 mx-8 mb-6" />*/}
 
         {/* FOOTER LINK */}
         <View className="flex-row justify-center items-center">

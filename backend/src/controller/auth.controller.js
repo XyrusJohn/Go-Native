@@ -176,3 +176,22 @@ export const checkAuth = async (req, res) => {
     });
   }
 };
+
+export const getTruckCompanies = async (req, res) => {
+  try {
+    //ph
+    const truckCompanies = await getAllTruckCompanies();
+    return res.status(200).json({
+      success: true,
+      message: "Truck companies retrieved successfully",
+      data: truckCompanies,
+    });
+  } catch (error) {
+    console.error("GetTruckCompanies error: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};

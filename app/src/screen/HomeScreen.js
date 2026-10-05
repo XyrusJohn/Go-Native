@@ -19,7 +19,7 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     // Basic check para hindi mag-submit ng blanko
     if (!username || !password) return;
     driverLogin({ username, password });

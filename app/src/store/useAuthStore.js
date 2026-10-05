@@ -54,7 +54,7 @@ export const useAuthStore = create((set, get) => ({
       Alert.alert("Success", "Logged in successfully");
     } catch (error) {
       const errorMsg =
-        error.response?.data?.message || "Failed to register driver";
+        error.response?.data?.message || "Failed to login driver";
       Alert.alert("Error", errorMsg);
       console.error("Error in driverLogin", error);
     } finally {

@@ -1,24 +1,72 @@
 import "./global.css";
-import { StatusBar } from "expo-status-bar";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { useEffect } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  useFonts,
+  AtkinsonHyperlegible_400Regular,
+  AtkinsonHyperlegible_700Bold,
+} from "@expo-google-fonts/atkinson-hyperlegible";
 
+import { useAuthStore } from "./src/store/useAuthStore.js";
+
+import LoginScreen from "./src/screen/LoginScreen.js";
+import RegistrationScreen from "./src/screen/RegistrationScreen.js";
+import HomeScreen from "./src/screen/HomeScreen.js";
+
+const Stack = createNativeStackNavigator();
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    AtkinsonHyperlegible_400Regular,
+    AtkinsonHyperlegible_700Bold,
+  });
+
+  const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  if (!fontsLoaded || isCheckingAuth) {
+    return (
+      <View className="flex-1 items-center justify-center bg-slate-100">
+        <ActivityIndicator size="large" color="#2563eb" />
+        <Text className="mt-4 text-slate-600 font-medium">
+          Loading session...
+        </Text>
+      </View>
+    );
+  }
+
   return (
-    <View className="flex-1 items-center justify-center bg-slate-100 p-6">
-      <Text className="text-4xl font-extrabold text-blue-600 mb-4 tracking-tight">
-        It Works! 🎉
-      </Text>
-
-      <Text className="text-base text-slate-600 text-center mb-8">
-        NativeWind v4 is successfully configured. You can now start building
-        your UI using Tailwind classes directly in React Native.
-      </Text>
-
-      <TouchableOpacity className="bg-blue-600 px-6 py-3 rounded-xl active:bg-blue-800">
-        <Text className="text-white font-semibold text-lg">Sample Button</Text>
-      </TouchableOpacity>
-
-      <StatusBar style="dark" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {authUser ? (
+          <>
+            <Stack.Screen name="Home" component={HomeScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Registration"
+              component={RegistrationScreen}
+              options={{ title: "Registration" }}
+            />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

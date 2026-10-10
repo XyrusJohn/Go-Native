@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { Alert } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 import { axiosInstance } from "../api/axios.js";
 
@@ -7,11 +8,14 @@ export const useAuthStore = create((set, get) => ({
   // Initial State
   authUser: null,
   userData: [],
+  truckCompanies: [],
 
   isCheckingAuth: false,
   isRegistering: false,
   isLoggingIn: false,
   isLoggingOut: false,
+  isFetchingTruckCompanies: false,
+  isFetchingDriverData: false,
 
   checkAuth: async () => {
     set({ isCheckingAuth: true });
@@ -50,6 +54,12 @@ export const useAuthStore = create((set, get) => ({
     try {
       set({ isLoggingIn: true });
       const loginRes = await axiosInstance.post("auth/login", driverData);
+
+      const token = loginRes.data.token;
+      if (token) {
+        await SecureStore.setItemAsync("userToken", token);
+      }
+
       set({ authUser: loginRes.data.user });
       Alert.alert("Success", "Logged in successfully");
     } catch (error) {
@@ -75,6 +85,35 @@ export const useAuthStore = create((set, get) => ({
       console.error("Error in driverLogout", error);
     } finally {
       set({ isLoggingOut: false });
+    }
+  },
+
+  fetchTruckCompanies: async () => {
+    try {
+      set({ isFetchingTruckCompanies: true });
+      const fetchTruckCompaniesRes = await axiosInstance.get(
+        "auth/truck-companies",
+      );
+
+      set({ truckCompanies: fetchTruckCompaniesRes.data.data });
+    } catch (error) {
+      console.error("Error in fetchTruckCompanies", error);
+    } finally {
+      set({ isFetchingTruckCompanies: false });
+    }
+  },
+
+  fetchDriverData: async () => {
+    try {
+      set({ isFetchingDriverData: true });
+
+      const fetchDriverDataRes = await axiosInstance.get("auth/profile");
+
+      set({ userData: fetchDriverDataRes.data.user });
+    } catch (error) {
+      console.error("Error in fetchDriverData", error);
+    } finally {
+      set({ isFetchingDriverData: false });
     }
   },
 }));

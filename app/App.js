@@ -20,6 +20,7 @@ import { useAuthStore } from "./src/store/useAuthStore.js";
 import LoginScreen from "./src/screen/LoginScreen.js";
 import RegistrationScreen from "./src/screen/RegistrationScreen.js";
 import HomeScreen from "./src/screen/HomeScreen.js";
+import QrScannerScreen from "./src/screen/QrScannerScreen.js";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -44,13 +45,24 @@ export default function App() {
       </View>
     );
   }
+  // for dev purposes, skip login
+  const SKIP_LOGIN = __DEV__ && true;
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {authUser ? (
+        {SKIP_LOGIN || authUser ? (
           <>
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="QrScanner"
+              component={QrScannerScreen}
+              options={{ headerShown: false }}
+            />
           </>
         ) : (
           <>
@@ -62,7 +74,7 @@ export default function App() {
             <Stack.Screen
               name="Registration"
               component={RegistrationScreen}
-              options={{ title: "Registration" }}
+              options={{ headerShown: false }}
             />
           </>
         )}

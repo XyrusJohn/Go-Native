@@ -103,13 +103,14 @@ export const driverLogin = async (req, res) => {
     const truckCompany = await findTruckCompanyById(user.truck_company_id);
 
     if (user && isPasswordValid) {
-      generateToken(user.id, res);
+      const token = generateToken(user.id, res);
 
       const { password: _, ...userData } = user;
 
       return res.status(200).json({
         success: true,
         message: "Login successful",
+        token: token,
         user: {
           ...userData,
           truck_company_name: truckCompany ? truckCompany.name : null,
@@ -169,6 +170,61 @@ export const checkAuth = async (req, res) => {
     });
   } catch (error) {
     console.error("CheckAuth error: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const getTruckCompanies = async (req, res) => {
+  try {
+    const truckCompanies = await getAllTruckCompanies();
+    return res.status(200).json({
+      success: true,
+      message: "Truck companies retrieved successfully",
+      data: truckCompanies,
+    });
+  } catch (error) {
+    console.error("GetTruckCompanies error: ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const getDriverProfile = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Driver ID is required",
+      });
+    }
+
+    const driverProfile = await findDriverById(id);
+
+    if (!driverProfile) {
+      return res.status(404).json({
+        success: false,
+        message: "Driver not found",
+      });
+    }
+    // I remove the password field from the response
+    const { password: _, ...userData } = driverProfile;
+
+    return res.status(200).json({
+      success: true,
+      message: "Driver profile retrieved successfully",
+      user: userData,
+    });
+  } catch (error) {
+    console.error("GetDriverProfile error: ", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

@@ -6,7 +6,6 @@ export const axiosInstance = axios.create({
   timeout: 5000,
 });
 
-// Interceptor para kusang isama ang Token galing sa SecureStore sa bawat request
 axiosInstance.interceptors.request.use(
   async (config) => {
     try {

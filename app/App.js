@@ -20,6 +20,7 @@ import { useAuthStore } from "./src/store/useAuthStore.js";
 import LoginScreen from "./src/screen/LoginScreen.js";
 import RegistrationScreen from "./src/screen/RegistrationScreen.js";
 import HomeScreen from "./src/screen/HomeScreen.js";
+import QrScannerScreen from "./src/screen/QrScannerScreen.js";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -55,6 +56,11 @@ export default function App() {
             <Stack.Screen
               name="Home"
               component={HomeScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="QrScanner"
+              component={QrScannerScreen}
               options={{ headerShown: false }}
             />
           </>

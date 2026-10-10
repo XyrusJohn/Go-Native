@@ -41,7 +41,7 @@ export const findDriverByIdentifier = async (identifier) => {
   return rows[0] || null;
 };
 
-// Use to find user by id
+// Use to find driver by id
 export const findDriverById = async (id) => {
   const selectQuery = `SELECT id, username, lastName, firstName, middleInitial, email, password, created_at FROM drivers WHERE id =?`;
   const [rows] = await mysql.execute(selectQuery, [id]);

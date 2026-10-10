@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,9 +10,9 @@ import { useNavigation } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import SlideButton from "../components/SliderButton.js";
 
-// TODO: palitan ng actual illustration mo (truck + 2 workers)
+import SlideButton from "../components/SliderButton.js";
+import { useAuthStore } from "../store/useAuthStore.js";
 
 const TABS = [
   { key: "ongoing", label: "ON GOING" },
@@ -79,7 +79,7 @@ function StatusTabs({ active, onChange }) {
 function BottomNav({ active = "home", onNavigate }) {
   const items = [
     { key: "home", icon: "home", iconOff: "home-outline", label: "Home" },
-    { key: "history", icon: "time", iconOff: "time-outline", label: "History" },
+    // { key: "history", icon: "time", iconOff: "time-outline", label: "History" },
     {
       key: "profile",
       icon: "person",
@@ -114,6 +114,17 @@ function BottomNav({ active = "home", onNavigate }) {
 }
 
 export default function HomeScreen() {
+  const { userData, fetchDriverData } = useAuthStore();
+
+  useEffect(() => {
+    fetchDriverData();
+  }, []);
+
+  const driverFullName =
+    userData?.firstName && userData?.lastName
+      ? `${userData.firstName} ${userData.lastName}`
+      : `${userData.username || "Driver"}`;
+
   const navigation = useNavigation();
   const { height } = useWindowDimensions();
   const [activeTab, setActiveTab] = useState("ongoing");
@@ -123,36 +134,25 @@ export default function HomeScreen() {
   const compact = height < 700;
 
   const handleStartQueue = () => {
-    setInQueue(true);
+    navigation.navigate("QrScanner");
     // TODO: tawagin dito yung API para mag-join sa queue
   };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
-        <ProfileHeader name="Thorin Oakenshield" compact={compact} />
+        <ProfileHeader name={driverFullName} compact={compact} />
         <StatusTabs active={activeTab} onChange={setActiveTab} />
 
         {activeTab === "ongoing" ? (
           <View className="flex-1 px-6">
             <View className="flex-1 items-center justify-center py-2">
               <View className="flex-1 w-full items-center justify-center">
-                {/* Palitan ng:
                 <Image
-                  source={truckIllustration}
+                  source={require("../../assets/Delivery.png")}
                   resizeMode="contain"
-                  style={{ width: "100%", height: "100%" }}
-                /> */}
-                <View
-                  className="w-full flex-1 rounded-2xl bg-gray-100 items-center justify-center"
-                  style={{ maxHeight: 320 }}
-                >
-                  <Ionicons
-                    name="bus-outline"
-                    size={compact ? 48 : 64}
-                    color="#9ca3af"
-                  />
-                </View>
+                  style={{ width: "100%", height: "100%", zIndex: -1000 }}
+                />
               </View>
 
               <Text
